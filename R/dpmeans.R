@@ -75,11 +75,19 @@ dpmeans <- function(data, lambda=1, maxiter=1234, abstol=1e-6, permute.order=FAL
   labels = rep(1,n)                       # labels={1,2,...,n}
   mu     = matrix(colMeans(data), nrow=1) # global mean
   lambda = as.double(lambda)
-  
+  iter_time = list()
+  obj_values = list()
+  lst_index = 1
+
   ############################################################
   # Main Iteration
-  ss.old = compute.ss(data, labels, mu)
+  start_time <- Sys.time()
+  ss.old = compute.ss(data, labels, mu)+lambda*k
   ss.new = 0
+  iter_time[[lst_index]] = 0.0
+  obj_values[[lst_index]] = ss.old
+  lst_index = lst_index + 1
+
   for (iter in 1:maxiter){
     # 0. updating order of observations
     if (permute.order){
@@ -133,6 +141,9 @@ dpmeans <- function(data, lambda=1, maxiter=1234, abstol=1e-6, permute.order=FAL
     ss.new   = compute.ss(data, labels, mu) + k*lambda
     ss.delta = ss.old-ss.new
     ss.old   = ss.new
+    iter_time[[lst_index]] = 0.0
+    obj_values[[lst_index]] = ss.old
+    lst_index = lst_index + 1
     
     # 5. stop if updating is not significant
     if (ss.delta < abstol){
