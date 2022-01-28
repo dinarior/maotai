@@ -141,7 +141,7 @@ dpmeans <- function(data, lambda=1, maxiter=1234, abstol=1e-6, permute.order=FAL
     ss.new   = compute.ss(data, labels, mu) + k*lambda
     ss.delta = ss.old-ss.new
     ss.old   = ss.new
-    iter_time[[lst_index]] = 0.0
+    iter_time[[lst_index]] = as.numeric(Sys.time()-start_time)
     obj_values[[lst_index]] = ss.old
     lst_index = lst_index + 1
     
@@ -156,6 +156,8 @@ dpmeans <- function(data, lambda=1, maxiter=1234, abstol=1e-6, permute.order=FAL
   output = list()
   output$cluster = as.factor(labels)
   output$centers = mu
+  output$iter_time = iter_time
+  output$obj_values = obj_values
   return(output)
 }
 
